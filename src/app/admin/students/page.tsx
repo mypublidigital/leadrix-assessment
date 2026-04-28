@@ -76,9 +76,9 @@ export default async function StudentsPage({ searchParams }: PageProps) {
     .select("industry")
     .not("industry", "is", null);
 
-  const uniqueIndustries = [
-    ...new Set(industries?.map((i) => i.industry).filter(Boolean)),
-  ].sort();
+  const uniqueIndustries = Array.from(
+    new Set(industries?.map((i) => i.industry).filter(Boolean) ?? [])
+  ).sort();
 
   return (
     <div className="px-6 py-8 space-y-6">
