@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
 import { assessmentSchema } from "@/lib/validations/assessment";
 import { AI_MATURITY_SCORES } from "@/lib/types";
 import type { AssessmentValues } from "@/lib/validations/assessment";
@@ -24,7 +24,8 @@ export async function submitAssessment(
   }
 
   const { step1, step2, step3, step4, step5, step6, step7 } = parsed.data;
-  const supabase = await createClient();
+  // Usa service_role para bypassar RLS — submissão pública controlada pelo server.
+  const supabase = await createAdminClient();
 
   try {
     // 2. Inserir registro do aluno
