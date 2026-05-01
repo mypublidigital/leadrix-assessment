@@ -15,6 +15,7 @@ import {
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import { Logo } from "@/components/ui/Logo";
 
 const NAV_ITEMS = [
   {
@@ -82,14 +83,9 @@ export function Sidebar() {
   const SidebarContent = () => (
     <div className="flex h-full flex-col">
       {/* Brand */}
-      <div className="flex items-center gap-3 px-4 py-6 border-b border-neutral-800">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-700">
-          <span className="text-base font-bold text-white">L</span>
-        </div>
-        <div>
-          <p className="text-sm font-bold text-white leading-tight">Leadrix IA</p>
-          <p className="text-xs text-neutral-500">Admin Dashboard</p>
-        </div>
+      <div className="flex flex-col items-center gap-2 px-4 py-6 border-b border-neutral-800">
+        <Logo width={140} priority />
+        <p className="text-xs text-neutral-500">Admin Dashboard</p>
       </div>
 
       {/* Nav */}

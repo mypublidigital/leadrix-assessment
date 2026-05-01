@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckCircle2, ArrowRight } from "lucide-react";
+import { Logo } from "@/components/ui/Logo";
 
 export const metadata: Metadata = {
   title: "Assessment Enviado — Leadrix IA",
@@ -10,16 +11,16 @@ export default function ThankYouPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-neutral-50 to-white px-4">
       <div className="w-full max-w-lg text-center">
+        {/* Logo */}
+        <Logo
+          width={180}
+          priority
+          className="mx-auto mb-6 rounded-2xl shadow-md"
+        />
+
         {/* Ícone de sucesso */}
         <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-50 border-2 border-emerald-100">
           <CheckCircle2 className="h-10 w-10 text-emerald-500" />
-        </div>
-
-        {/* Label */}
-        <div className="inline-flex items-center gap-2 rounded-full bg-brand-50 border border-brand-100 px-4 py-1.5 mb-4">
-          <span className="text-xs font-semibold text-brand-700 uppercase tracking-wider">
-            Curso Leadrix IA
-          </span>
         </div>
 
         <h1 className="text-2xl font-bold text-neutral-900 sm:text-3xl">

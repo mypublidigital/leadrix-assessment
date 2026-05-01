@@ -16,6 +16,7 @@ import { Step7ExpectedOutcomes } from "./steps/Step7ExpectedOutcomes";
 
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
+import { Logo } from "@/components/ui/Logo";
 
 import { assessmentSchema } from "@/lib/validations/assessment";
 import type { AssessmentValues } from "@/lib/validations/assessment";
@@ -174,11 +175,11 @@ export function AssessmentShell() {
       <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
         {/* Header */}
         <div className="mb-8 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full bg-brand-50 border border-brand-100 px-4 py-1.5 mb-4">
-            <span className="text-xs font-semibold text-brand-700 uppercase tracking-wider">
-              Curso Leadrix IA
-            </span>
-          </div>
+          <Logo
+            width={200}
+            priority
+            className="mx-auto mb-6 rounded-2xl shadow-md"
+          />
           <h1 className="text-2xl font-bold text-neutral-900 sm:text-3xl">
             Assessment de Personalização
           </h1>

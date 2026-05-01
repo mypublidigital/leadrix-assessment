@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { LoginForm } from "./LoginForm";
+import { Logo } from "@/components/ui/Logo";
 
 export const metadata: Metadata = {
   title: "Acesso Administrativo — Leadrix IA",
@@ -20,10 +21,7 @@ export default function LoginPage() {
         <div className="rounded-2xl border border-neutral-800 bg-neutral-900 p-8 shadow-2xl">
           {/* Logo / Brand */}
           <div className="mb-8 text-center">
-            <div className="mx-auto mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand-700">
-              <span className="text-xl font-bold text-white">L</span>
-            </div>
-            <h1 className="text-xl font-bold text-white">Leadrix IA</h1>
+            <Logo width={180} priority className="mx-auto mb-4" />
             <p className="mt-1 text-sm text-neutral-400">
               Área Administrativa
             </p>
