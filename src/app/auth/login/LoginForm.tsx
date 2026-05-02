@@ -1,57 +1,37 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { useState, useTransition } from "react";
+import { useSearchParams } from "next/navigation";
+import { loginWithPassword } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
 import { Mail, Lock } from "lucide-react";
 
-type FormState = "idle" | "loading" | "error";
-
 export function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [state, setState] = useState<FormState>("idle");
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") ?? "/admin";
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim() || !password) return;
-
-    setState("loading");
     setError(null);
 
-    const supabase = createClient();
-
-    const { error: authError } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password,
+    startTransition(async () => {
+      const result = await loginWithPassword(email, password, redirectTo);
+      // Se chegou aqui, deu erro (success faz redirect e nem retorna).
+      if (result && !result.success) {
+        setError(result.error);
+      }
     });
-
-    if (authError) {
-      setState("error");
-      setError(
-        authError.message === "Invalid login credentials"
-          ? "E-mail ou senha incorretos."
-          : authError.message
-      );
-      return;
-    }
-
-    router.push(redirectTo);
-    router.refresh();
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <h2 className="text-base font-semibold text-white mb-1">
-          Entrar
-        </h2>
+        <h2 className="text-base font-semibold text-white mb-1">Entrar</h2>
         <p className="text-xs text-neutral-400">
           Use seu e-mail e senha administrativos.
         </p>
@@ -80,7 +60,8 @@ export function LoginForm() {
             placeholder="admin@leadrix.com.br"
             required
             autoComplete="email"
-            className="w-full h-11 rounded-lg border border-neutral-700 bg-neutral-800 pl-10 pr-4 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
+            disabled={isPending}
+            className="w-full h-11 rounded-lg border border-neutral-700 bg-neutral-800 pl-10 pr-4 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors disabled:opacity-60"
           />
         </div>
       </div>
@@ -102,7 +83,8 @@ export function LoginForm() {
             placeholder="••••••••"
             required
             autoComplete="current-password"
-            className="w-full h-11 rounded-lg border border-neutral-700 bg-neutral-800 pl-10 pr-4 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
+            disabled={isPending}
+            className="w-full h-11 rounded-lg border border-neutral-700 bg-neutral-800 pl-10 pr-4 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors disabled:opacity-60"
           />
         </div>
       </div>
@@ -110,7 +92,7 @@ export function LoginForm() {
       <Button
         type="submit"
         fullWidth
-        loading={state === "loading"}
+        loading={isPending}
         size="lg"
         className="mt-2"
       >
