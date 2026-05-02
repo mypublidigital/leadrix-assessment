@@ -226,6 +226,7 @@ create policy "profiles: admin vê todos"
 -- Qualquer um (inclusive anônimo) pode inserir — formulário público
 create policy "students: inserção pública"
   on public.students for insert
+  to anon, authenticated
   with check (true);
 
 -- Somente autenticados podem ler, atualizar e deletar
@@ -251,6 +252,7 @@ create policy "students: admins deletam"
 -- -------------------------------------------------------
 create policy "assessment: inserção pública"
   on public.assessment_responses for insert
+  to anon, authenticated
   with check (true);
 
 create policy "assessment: autenticados leem"

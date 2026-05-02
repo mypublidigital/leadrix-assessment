@@ -13,8 +13,6 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
 import { Logo } from "@/components/ui/Logo";
 
 const NAV_ITEMS = [
@@ -71,14 +69,6 @@ function NavItem({
 
 export function Sidebar() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const router = useRouter();
-
-  const handleLogout = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.push("/auth/login");
-    router.refresh();
-  };
 
   const SidebarContent = () => (
     <div className="flex h-full flex-col">
@@ -100,13 +90,15 @@ export function Sidebar() {
 
       {/* Logout */}
       <div className="border-t border-neutral-800 p-4">
-        <button
-          onClick={handleLogout}
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-neutral-400 hover:text-white hover:bg-neutral-800 transition-all duration-150"
-        >
-          <LogOut className="h-4 w-4" />
-          Sair
-        </button>
+        <form action="/api/auth/logout" method="POST">
+          <button
+            type="submit"
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-neutral-400 hover:text-white hover:bg-neutral-800 transition-all duration-150"
+          >
+            <LogOut className="h-4 w-4" />
+            Sair
+          </button>
+        </form>
       </div>
     </div>
   );
