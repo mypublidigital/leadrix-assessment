@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Card, CardHeader, CardTitle } from "@/components/ui/Card";
 import { InsightCard } from "@/components/admin/InsightCard";
 import { AdminNotesPanel } from "@/components/admin/students/AdminNotesPanel";
+import { DeleteStudentButton } from "@/components/admin/students/DeleteStudentButton";
 import { generateStudentInsights } from "@/lib/utils/insights";
 import { ArrowLeft, MapPin, Building2, Briefcase, Link2, Mail, Phone } from "lucide-react";
 import Link from "next/link";
@@ -48,7 +49,13 @@ export default async function StudentDetailPage({ params }: PageProps) {
 
   const student = studentResult.data as StudentWithAssessment;
   const notes = (notesResult.data ?? []) as AdminNote[];
-  const r = student.assessment_responses;
+  // Defensivo: Supabase retorna a relação como objeto (com UNIQUE constraint)
+  // ou como array (sem). Normalizamos pra objeto.
+  const rawR = student.assessment_responses as
+    | StudentWithAssessment["assessment_responses"]
+    | StudentWithAssessment["assessment_responses"][]
+    | null;
+  const r = Array.isArray(rawR) ? (rawR[0] ?? null) : rawR;
 
   const insights = generateStudentInsights(student);
 
@@ -80,33 +87,39 @@ export default async function StudentDetailPage({ params }: PageProps) {
           Voltar para alunos
         </Link>
 
-        <div className="flex items-start gap-4">
-          <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-brand-700 text-white text-xl font-bold">
-            {(student.preferred_name ?? student.full_name).charAt(0).toUpperCase()}
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-neutral-900">
-              {student.full_name}
-            </h1>
-            {student.preferred_name && student.preferred_name !== student.full_name && (
-              <p className="text-sm text-neutral-500">
-                Chamado(a) de "{student.preferred_name}"
-              </p>
-            )}
-            <div className="mt-2 flex flex-wrap gap-2">
-              {r?.ai_maturity_level && (
-                <Badge variant={maturityVariant as never}>
-                  IA: {r.ai_maturity_level.charAt(0).toUpperCase() + r.ai_maturity_level.slice(1)}
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-start gap-4">
+            <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-brand-700 text-white text-xl font-bold">
+              {(student.preferred_name ?? student.full_name).charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-neutral-900">
+                {student.full_name}
+              </h1>
+              {student.preferred_name && student.preferred_name !== student.full_name && (
+                <p className="text-sm text-neutral-500">
+                  Chamado(a) de "{student.preferred_name}"
+                </p>
+              )}
+              <div className="mt-2 flex flex-wrap gap-2">
+                {r?.ai_maturity_level && (
+                  <Badge variant={maturityVariant as never}>
+                    IA: {r.ai_maturity_level.charAt(0).toUpperCase() + r.ai_maturity_level.slice(1)}
+                  </Badge>
+                )}
+                <Badge variant={r?.is_complete ? "success" : "warning"}>
+                  {r?.is_complete ? "Assessment completo" : "Assessment incompleto"}
                 </Badge>
-              )}
-              <Badge variant={r?.is_complete ? "success" : "warning"}>
-                {r?.is_complete ? "Assessment completo" : "Assessment incompleto"}
-              </Badge>
-              {r?.opt_in_matchmaking && (
-                <Badge variant="info">Opt-in networking</Badge>
-              )}
+                {r?.opt_in_matchmaking && (
+                  <Badge variant="info">Opt-in networking</Badge>
+                )}
+              </div>
             </div>
           </div>
+          <DeleteStudentButton
+            studentId={student.id}
+            studentName={student.full_name}
+          />
         </div>
       </div>
 

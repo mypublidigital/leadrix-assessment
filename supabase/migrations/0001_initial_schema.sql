@@ -91,7 +91,7 @@ create index idx_students_created_at on public.students(created_at desc);
 -- =============================================================
 create table if not exists public.assessment_responses (
   id                          uuid primary key default uuid_generate_v4(),
-  student_id                  uuid not null references public.students(id) on delete cascade,
+  student_id                  uuid not null unique references public.students(id) on delete cascade,
 
   -- Seção 2: Momento profissional
   strategic_moment            text,

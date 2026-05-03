@@ -8,6 +8,7 @@ import {
   Users,
   BarChart3,
   Network,
+  Settings,
   LogOut,
   Menu,
   X,
@@ -38,6 +39,12 @@ const NAV_ITEMS = [
     href: "/admin/networking",
     label: "Networking",
     icon: Network,
+    exact: false,
+  },
+  {
+    href: "/admin/settings",
+    label: "Configurações",
+    icon: Settings,
     exact: false,
   },
 ];
